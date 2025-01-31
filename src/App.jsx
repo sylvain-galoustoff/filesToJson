@@ -14,13 +14,13 @@ function App() {
 		const fileMap = {};
 		for (let i = 0; i < files.length; i++) {
 			const fileName = files[i].name;
-			fileMap[fileName] = `require('../../assets/${fileName}')`;
+			fileMap[fileName] = `require('../assets/diapos/${fileName}')`;
 		}
 
 		setJsonResult(JSON.stringify(fileMap, null, 2));
 	};
 
-	const themesBuilder = () => {
+	const themeImagesBuilder = () => {
 		const fileMap = [];
 		for (let i = 0; i < files.length; i++) {
 			let fileName = files[i].name;
@@ -47,6 +47,12 @@ function App() {
 			});
 	};
 
+	const handleReset = () => {
+		setFiles(null);
+		setJsonResult("");
+		document.getElementById("input-file").value = "";
+	};
+
 	return (
 		<div id="app">
 			<div id="left">
@@ -54,7 +60,7 @@ function App() {
 				<button type="button" onClick={rnFileMap}>
 					File map
 				</button>
-				<button type="button" onClick={themesBuilder}>
+				<button type="button" onClick={themeImagesBuilder}>
 					Build themes
 				</button>
 			</div>
@@ -63,7 +69,7 @@ function App() {
 					<button type="button" id="copy" onClick={handleCopy}>
 						Copier
 					</button>
-					<button type="button" id="reset" onClick={handleCopy}>
+					<button type="button" id="reset" onClick={handleReset}>
 						Reset
 					</button>
 				</div>
