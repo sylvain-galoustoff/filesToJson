@@ -128,6 +128,15 @@ body {
 	border-bottom-right-radius: 8px;
 }
 
+#confirm-copy {
+	position: fixed;
+	top: 16px;
+	left: calc(50%);
+	background-color: #242424;
+	padding: 8px;
+	border-radius: 8px;
+}
+
 pre {
 	margin: 0;
 	padding: 2rem;

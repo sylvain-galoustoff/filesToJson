@@ -3,6 +3,7 @@ import { useState } from "react";
 function App() {
 	const [files, setFiles] = useState();
 	const [jsonResult, setJsonResult] = useState("");
+	const [copyMessage, setCopymessage] = useState(false);
 
 	const handleChange = (e) => {
 		const files = e.target.files;
@@ -36,11 +37,45 @@ function App() {
 		setJsonResult(JSON.stringify(fileMap, null, 2));
 	};
 
+	const filesArray = () => {
+		const array = [];
+		for (let i = 0; i < files.length; i++) {
+			array.push(files[i].name);
+		}
+		setJsonResult(JSON.stringify(array, null, 2));
+	};
+
+	const soundImageObj = () => {
+		const filesArray = Array.from(files);
+		const images = filesArray.filter((file) => file.name.endsWith(".webp"));
+		const sounds = filesArray.filter((file) => file.name.endsWith(".mp3"));
+
+		const soundMap = new Map();
+		sounds.forEach((sound) => {
+			const baseName = sound.name.replace(".mp3", "");
+			soundMap.set(baseName, sound.name);
+		});
+
+		const result = images.map((image) => {
+			const baseName = image.name.replace(".webp", "");
+			return soundMap.has(baseName)
+				? { image: image.name, sound: soundMap.get(baseName) }
+				: { image: image.name };
+		});
+
+		result.sort((a, b) => a.image.localeCompare(b.image));
+
+		setJsonResult(JSON.stringify(result, null, 2));
+	};
+
 	const handleCopy = () => {
 		navigator.clipboard
 			.writeText(jsonResult)
 			.then(() => {
-				alert("Contenu copié dans le presse-papier !");
+				setCopymessage(true);
+				setTimeout(() => {
+					setCopymessage(false);
+				}, 5000);
 			})
 			.catch((err) => {
 				alert("Erreur lors de la copie : " + err);
@@ -63,6 +98,12 @@ function App() {
 				<button type="button" onClick={themeImagesBuilder}>
 					Build themes
 				</button>
+				<button type="button" onClick={filesArray}>
+					Tableau de fichiers
+				</button>
+				<button type="button" onClick={soundImageObj}>
+					Objet son + image
+				</button>
 			</div>
 			<div id="right">
 				<div id="toolbar">
@@ -72,6 +113,7 @@ function App() {
 					<button type="button" id="reset" onClick={handleReset}>
 						Reset
 					</button>
+					{copyMessage && <p id="confirm-copy">Elément copié</p>}
 				</div>
 				<pre>{jsonResult}</pre>
 			</div>
